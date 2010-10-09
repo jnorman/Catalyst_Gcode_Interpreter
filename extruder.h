@@ -2,7 +2,7 @@
 #define EXTRUDER_H
 
 #define EXTRUDER_FORWARD true
-#define EXTRUDER_REVERSE true
+#define EXTRUDER_REVERSE false
 
 #define EXTRUDER_COUNT 1
 
@@ -35,12 +35,12 @@ private:
     bool valve_open;
 
 // The pins we control
-    byte motor_dir_pin, motor_speed_pin, heater_pin, fan_pin, temp_pin, valve_dir_pin, valve_en_pin; 
+    byte motor_dir_pin, motor_speed_pin, heater_pin, fan_pin, temp_pin, valve_dir_pin, valve_en_pin, bedtemp_pin, bedheater_pin; 
     int step_en_pin;
     
 public:
 
-   extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, byte vd_pin, byte ve_pin, int se_pin);
+   extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, byte vd_pin, byte ve_pin, int se_pin, byte bedt_pin, byte bedh_pin);
    void wait_for_temperature();
    //byte wait_till_cool();
    byte wait_till_hot();
@@ -51,6 +51,8 @@ public:
    void set_cooler(byte e_speed);
    void set_temperature(int temp);
    int get_temperature();
+   int get_BedTemperature();
+   void set_BedTemperature(int temp);
    int sample_temperature(byte pin);
    void manage();
    

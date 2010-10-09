@@ -77,5 +77,9 @@
 #define EXTRUDER_0_VALVE_ENABLE_PIN          (byte)-1 
 #define EXTRUDER_0_STEP_ENABLE_PIN  (int)-1 // 5 - NB conflicts with the fan; set -ve if no stepper
 
+//heated bed
+#define BED_TEMPERATURE_PIN    (byte)-1 //change when decided
+#define BED_HEATER_PIN         (byte)-1 //change later also
+
 #endif
 #endif

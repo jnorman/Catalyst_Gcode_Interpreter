@@ -336,6 +336,13 @@ void process_string(char instruction[], int size)
 			        dda_move(getMaxSpeed());
                                 break;
 				//break;
+                        //another attempt to home
+                        /*case 28:
+                                set_target(-300.0, -300.0, -300.0)
+                                dda_move(getMaxSpeed() / 4);
+                                set_position(fp.x, fp.y, fp.z);
+                                break;
+                                */
                         case 30:
 				//set our target.
 				set_target(fp.x, fp.y, fp.z);
@@ -538,11 +545,11 @@ void process_string(char instruction[], int size)
 				break;
                         //heated bed
                         case 115:
-                                //add some stuff here Oct 8, 2010
+                                //add some stuff here
                                 break;
                         //heated chamber
                         case 116:
-                                //add heated chamber stuff Oct 8, 2010
+                                //add heated chamber stuff
                                 break;
                         //holding force... buh?
                         case 117:
@@ -553,9 +560,13 @@ void process_string(char instruction[], int size)
                                 ex[extruder_in_use]->valve_set(true, (int)(gc.P + 0.5));
                                 break;
                                 
-                                // Close the valve
+                        // Close the valve
                         case 127:
                                 ex[extruder_in_use]->valve_set(false, (int)(gc.P + 0.5));
+                                break;
+                        //reprap host heated bed
+                        case 140:
+                                //blah blah
                                 break;
                                                                 
 
