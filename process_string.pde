@@ -299,7 +299,7 @@ void process_string(char instruction[], int size)
 				calculate_deltas();
 				break;
 
-				//go home.
+		        //go home. -original
 			/*case 28:
 				set_target(0.0, 0.0, 0.0);
 				dda_move(getMaxSpeed());
@@ -336,7 +336,7 @@ void process_string(char instruction[], int size)
 			        dda_move(getMaxSpeed());
                                 break;
 				//break;
-                        //another attempt to home
+                        //another attempt to home -need to be tested
                         /*case 28:
                                 set_target(-300.0, -300.0, -300.0)
                                 dda_move(getMaxSpeed() / 4);
@@ -505,11 +505,12 @@ void process_string(char instruction[], int size)
 				//custom code for temperature reading
 			case 105:
 				Serial.print("T:");
-				Serial.println(ex[extruder_in_use]->get_temperature());
+				Serial.print(ex[extruder_in_use]->get_temperature());
 
                                 //and bed temperature
                                 Serial.print(" B:");
                                 Serial.println(ex[0]->get_BedTemperature());
+                                //Serial.println(ex[extruder_in_use]->get_BedTemperature());
 				break;
 
 				//turn fan on
@@ -543,21 +544,35 @@ void process_string(char instruction[], int size)
 //					}
 				}
 				break;
+                        case 110:
+                                //set current line Number
+                                break;
+                        case 111:
+                                //set Debug Level
+                                //M111 S6 -set debug to level 6
+                                break;
+                        
+                        case 112:
+                                //emergency stop
+                                break;
                         //stop extruder        
                         case 113:
                                 ex[extruder_in_use]->set_speed(0);
 				break;
-                        //heated bed
+                        case 114:
+                                //Get current position
+                                break;
+                        //give Firmware Version and Capabilities to host
                         case 115:
-                                ex[0]->set_BedTemperature((int)gc.S);
+                                //Get Firmware Version and Capabilities
                                 break;
-                        //heated chamber
+                        //wait
                         case 116:
-                                //add heated chamber stuff
+                                //Wait for all temperatures and other slowly-changing variables to arrive at their set values. See also M109.
                                 break;
-                        //holding force... buh?
+                        //get Zero position in steps
                         case 117:
-                                //what IS this?
+                                
                                 break;
                         //open the valve
                         case 126:
@@ -573,7 +588,27 @@ void process_string(char instruction[], int size)
                                 //blah blah
                                 ex[0]->set_BedTemperature((int)gc.S);
                                 break;
-                                                                
+                        case 141:
+                                //chamber temperature
+                                break;
+                        case 142:
+                                //Holding pressure... a who?
+                                break;
+                        case 226:
+                                //Gcode initiated pause
+                                break;
+                        case 227:
+                                //enable automatic reverse and prime
+                                break;
+                        case 228:
+                                //disable automatic revese and prime
+                                break;
+                        case 229:
+                                //enable automatic reverse and prime
+                                break;
+                        case 230:
+                                //disable / enable wait for temperature change
+                                break;                  
 
 			default:
 				Serial.print("Huh? M");
