@@ -20,6 +20,9 @@ private:
     byte heater_high;
     byte heater_current;
     int extrude_step_count;
+    int bedtarget;
+    int bedmaxtemp;
+    byte bedheater_current;
 
 // These are used for temperature control    
     byte count ;
@@ -35,12 +38,12 @@ private:
     bool valve_open;
 
 // The pins we control
-    byte motor_dir_pin, motor_speed_pin, heater_pin, fan_pin, temp_pin, valve_dir_pin, valve_en_pin, bedtemp_pin, bedheater_pin; 
+    byte motor_dir_pin, motor_speed_pin, heater_pin, fan_pin, temp_pin, valve_dir_pin, valve_en_pin, bedtemp_pin, bedheater_pin_1, bedheater_pin_2; 
     int step_en_pin;
     
 public:
 
-   extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, byte vd_pin, byte ve_pin, int se_pin, byte bedt_pin, byte bedh_pin);
+   extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, byte vd_pin, byte ve_pin, int se_pin, byte bedt_pin, byte bedh_pin_1, byte bedh_pin_2);
    void wait_for_temperature();
    //byte wait_till_cool();
    byte wait_till_hot();

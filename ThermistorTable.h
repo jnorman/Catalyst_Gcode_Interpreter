@@ -57,7 +57,6 @@ short temptable[NUMTEMPS][2] = {
 // r2: 1600
 // beta: 4036
 // max adc: 305
-#define NUMTEMPS 19
 short bedtemptable[NUMTEMPS][2] = {
    {1, 571},
    {17, 253},

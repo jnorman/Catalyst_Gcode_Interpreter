@@ -10,7 +10,7 @@ void manage_all_extruders()
        ex[i]->manage();
 }
    
-extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, byte vd_pin, byte ve_pin, int se_pin, byte bedt_pin, byte bedh_pin)
+extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, byte vd_pin, byte ve_pin, int se_pin, byte bedt_pin, byte bedh_pin_1, byte bedh_pin_2)
 {
          motor_dir_pin = md_pin;
          motor_speed_pin = ms_pin;
@@ -21,7 +21,8 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
          valve_en_pin = ve_pin;
          step_en_pin = se_pin;
          bedtemp_pin = bedt_pin;
-         bedheater_pin = bedh_pin;
+         bedheater_pin_1 = bedh_pin_1;
+         bedheater_pin_2 = bedh_pin_2;
          
 	//setup our pins
 	pinMode(motor_dir_pin, OUTPUT);
@@ -32,8 +33,9 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
 	pinMode(valve_dir_pin, OUTPUT); 
         pinMode(valve_en_pin, OUTPUT);
         pinMode(bedtemp_pin, INPUT);
-        pinMode(bedheater_pin, OUTPUT);
-
+        pinMode(bedheater_pin_1, OUTPUT);
+        pinMode(bedheater_pin_2, OUTPUT);
+        
 	//initialize values
 	digitalWrite(motor_dir_pin, EXTRUDER_FORWARD);
 	analogWrite(fan_pin, 0);
@@ -41,7 +43,8 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
 	analogWrite(motor_speed_pin, 0);
 	digitalWrite(valve_dir_pin, false);
 	digitalWrite(valve_en_pin, 0);
-        analogWrite(bedheater_pin, 0);
+        analogWrite(bedheater_pin_1, 0);
+        analogWrite(bedheater_pin_2, 0);
 
         if(step_en_pin >= 0)
         {
@@ -233,9 +236,9 @@ void extruder::manage()
 {
 	//make sure we know what our temp is.
 	int current_celsius = get_temperature();
-        //int bedTemp = get_bedtemperature();
+        int bedTemp = get_BedTemperature();
         byte newheat = 0;
-        //byte bedheat = 0;
+        byte bedheat = 0;
   
         //put the heater into high mode if we're not at our target.
         if (current_celsius < target_celsius)
@@ -250,18 +253,19 @@ void extruder::manage()
                 analogWrite(heater_pin, heater_current);
         }
         
-/*      //adding in heated bed control
+      //adding in heated bed control
         if (bedTemp < bedtarget)
                 bedheat = heater_high;
         else if (bedTemp < bedmaxtemp)
                 bedheat = heater_low;
                 
         //update bed heat if it changed
-        if (bedtemp_current != bedheat){
-                bedtemp_current = bedheat;
-                analogWrite(bed_heater_pin, bedtemp_current);
+        if (bedheater_current != bedheat){
+                bedheater_current = bedheat;
+                analogWrite(bedheater_pin_1, bedheater_current);
+                analogWrite(bedheater_pin_2, bedheater_current);
         }
-*/
+
 
 }
 
@@ -480,10 +484,37 @@ byte extruder::getTimerResolution(long delay)
 
 void extruder::set_BedTemperature(int temp)
 {
+	bedtarget = temp;
+	bedmaxtemp = (temp*11)/10;
 }
 
 int extruder::get_BedTemperature()
 {
+  	int raw = sample_temperature(bedtemp_pin);
+
+	int celsius = 0;
+	byte i;
+
+	for (i=1; i<NUMTEMPS; i++)
+	{
+		if (bedtemptable[i][0] > raw)
+		{
+			celsius  = bedtemptable[i-1][1] + 
+				(raw - bedtemptable[i-1][0]) * 
+				(bedtemptable[i][1] - bedtemptable[i-1][1]) /
+				(bedtemptable[i][0] - bedtemptable[i-1][0]);
+
+			break;
+		}
+	}
+
+        // Overflow: Set to last value in the table
+        if (i == NUMTEMPS) celsius = bedtemptable[i-1][1];
+        // Clamp to byte
+        if (celsius > 255) celsius = 255; 
+        else if (celsius < 0) celsius = 0; 
+
+	return celsius;
 }
 
 #ifdef TEST_MACHINE

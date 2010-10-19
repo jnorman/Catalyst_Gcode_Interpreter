@@ -506,6 +506,10 @@ void process_string(char instruction[], int size)
 			case 105:
 				Serial.print("T:");
 				Serial.println(ex[extruder_in_use]->get_temperature());
+
+                                //and bed temperature
+                                Serial.print(" B:");
+                                Serial.println(ex[0]->get_BedTemperature());
 				break;
 
 				//turn fan on
@@ -545,7 +549,7 @@ void process_string(char instruction[], int size)
 				break;
                         //heated bed
                         case 115:
-                                //add some stuff here
+                                ex[0]->set_BedTemperature((int)gc.S);
                                 break;
                         //heated chamber
                         case 116:
@@ -567,6 +571,7 @@ void process_string(char instruction[], int size)
                         //reprap host heated bed
                         case 140:
                                 //blah blah
+                                ex[0]->set_BedTemperature((int)gc.S);
                                 break;
                                                                 
 
